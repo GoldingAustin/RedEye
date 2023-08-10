@@ -88,10 +88,15 @@ const createServer = async ({
 		plugins: !production ? [ApolloServerPluginLandingPageLocalDefault()] : undefined,
 		introspection: !production,
 	};
-
+	let parserIn: any;
+	try {
+		parserIn = await parserInfo(ctx.config.parsers);
+	} catch (e) {
+		console.error(e);
+	}
 	const endpointContext: EndpointContext = {
 		config: ctx.config,
-		parserInfo: await parserInfo(ctx.config.parsers),
+		parserInfo: parserIn,
 		cm: ctx.cm,
 		messengerMachine: ctx.messagingService,
 	};

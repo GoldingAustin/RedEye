@@ -10,6 +10,7 @@ import { exec, execFile } from 'child_process';
 import path from 'path';
 import type { GraphQLContext } from '../types';
 import { parserService } from './parser.service';
+import { escapeFilePath } from "@redeye/parser-core";
 
 type ParserContext = {
 	queuedCampaigns: { campaignId: string; parserName: string }[];
@@ -172,7 +173,15 @@ type ParsingScriptArgs = {
 };
 const invokeParsingScript = ({ projectDatabasePath, loggingFolderPath, maxProcesses }: ParsingScriptArgs) => {
 	return new Promise<void>((resolve, reject) => {
-		const args = [`campaign`, `-d`, projectDatabasePath, `-p`, loggingFolderPath, `-t`, `${maxProcesses - 1}`];
+		const args = [
+			`campaign`,
+			`-d`,
+			escapeFilePath(projectDatabasePath),
+			`-p`,
+			escapeFilePath(loggingFolderPath),
+			`-t`,
+			`${maxProcesses - 1}`,
+		];
 
 		const execCallBack = (error: unknown, stdout: unknown, stderror: unknown) => {
 			if (error || stderror) {
@@ -186,7 +195,7 @@ const invokeParsingScript = ({ projectDatabasePath, loggingFolderPath, maxProces
 		try {
 			if (process.pkg) {
 				const baseCommand = path.resolve(getRuntimeDir(), 'parsers', 'cobalt-strike-parser');
-				execFile(baseCommand, args, execCallBack);
+				execFile(baseCommand, args, { shell: false }, execCallBack);
 			} else {
 				exec(`cobalt-strike-parser ${args.join(' ')}`, execCallBack);
 			}

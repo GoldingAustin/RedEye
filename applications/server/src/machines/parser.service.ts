@@ -22,7 +22,12 @@ import * as readline from 'node:readline';
 import path from 'path';
 import { getRuntimeDir } from '../util';
 import type { ParserInfo, ParserOutput } from '@redeye/parser-core';
-import { createLoggerInstance, ParserMessageTypes, getParserPrefixAndMessage } from '@redeye/parser-core';
+import {
+	createLoggerInstance,
+	ParserMessageTypes,
+	getParserPrefixAndMessage,
+	escapeFilePath
+} from "@redeye/parser-core";
 import type { ChildProcess } from 'child_process';
 import { exec, execFile } from 'child_process';
 import type { EndpointContext, EntityManager } from '../types';
@@ -35,7 +40,8 @@ export const invokeParser = <T>(parserName: string, args: string[], loggingFolde
 			let parserProcess: ChildProcess | undefined;
 			if (process.pkg) {
 				const baseCommand = path.resolve(getRuntimeDir(), 'parsers', parserName);
-				parserProcess = execFile(baseCommand, args);
+				console.log('baseCommand', baseCommand);
+				parserProcess = execFile(baseCommand, args, { shell: false });
 			} else {
 				parserProcess = exec(`${parserName} ${args.join(' ')}`);
 			}
@@ -52,7 +58,7 @@ export const invokeParser = <T>(parserName: string, args: string[], loggingFolde
 					if (prefix === ParserMessageTypes.Data) {
 						resolve(JSON.parse(message));
 					} else if (prefix === ParserMessageTypes.Progress) {
-						console.debug({ parserName, prefix, message }); // TODO: Update campaign progress
+						console.log({ parserName, prefix, message }); // TODO: Update campaign progress
 					} else if (prefix === ParserMessageTypes.Log) {
 						if (logger) {
 							logger(JSON.parse(message));
@@ -60,20 +66,23 @@ export const invokeParser = <T>(parserName: string, args: string[], loggingFolde
 							console.log({ parserName, message });
 						}
 					} else if (prefix === ParserMessageTypes.Debug) {
-						console.debug({ parserName, message });
+						console.log({ parserName, message });
 					} else {
-						console.debug({ parserName, data });
+						console.log({ parserName, data });
 					}
 				} else {
-					console.debug('ERROR: invalid stdout', { parserName, data });
+					console.log('ERROR: invalid stdout', { parserName, data });
 				}
 			});
 
 			parserProcess.on('close', () => {
 				rl.close();
 			});
+			parserProcess.on('error', (error) => {
+				console.log(error);
+			});
 		} catch (error) {
-			console.debug('ERROR: throw in exec', error);
+			console.log('ERROR: throw in exec', error);
 			reject(error);
 		}
 	});
@@ -105,7 +114,7 @@ async function parsePaths(em: EntityManager, path: string, parserName: string) {
 		beacons: {},
 		operators: {},
 	};
-	const data = await invokeParser<ParserOutput>(parserName, ['parse-campaign', `--folder`, path]);
+	const data = await invokeParser<ParserOutput>(parserName, ['parse-campaign', `--folder`, escapeFilePath(path)]);
 	if (data.servers) {
 		for (const parsedServer of Object.values(data.servers)) {
 			created.servers[parsedServer.name] =
