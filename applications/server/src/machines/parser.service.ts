@@ -40,8 +40,7 @@ export const invokeParser = <T>(parserName: string, args: string[], loggingFolde
 			let parserProcess: ChildProcess | undefined;
 			if (process.pkg) {
 				const baseCommand = path.resolve(getRuntimeDir(), 'parsers', parserName);
-				console.log('baseCommand', baseCommand);
-				parserProcess = execFile(baseCommand, args, { shell: false });
+				parserProcess = execFile(baseCommand, args);
 			} else {
 				parserProcess = exec(`${parserName} ${args.join(' ')}`);
 			}
@@ -58,7 +57,7 @@ export const invokeParser = <T>(parserName: string, args: string[], loggingFolde
 					if (prefix === ParserMessageTypes.Data) {
 						resolve(JSON.parse(message));
 					} else if (prefix === ParserMessageTypes.Progress) {
-						console.log({ parserName, prefix, message }); // TODO: Update campaign progress
+						console.debug({ parserName, prefix, message }); // TODO: Update campaign progress
 					} else if (prefix === ParserMessageTypes.Log) {
 						if (logger) {
 							logger(JSON.parse(message));
@@ -66,23 +65,20 @@ export const invokeParser = <T>(parserName: string, args: string[], loggingFolde
 							console.log({ parserName, message });
 						}
 					} else if (prefix === ParserMessageTypes.Debug) {
-						console.log({ parserName, message });
+						console.debug({ parserName, message });
 					} else {
-						console.log({ parserName, data });
+						console.debug({ parserName, data });
 					}
 				} else {
-					console.log('ERROR: invalid stdout', { parserName, data });
+					console.debug('ERROR: invalid stdout', { parserName, data });
 				}
 			});
 
 			parserProcess.on('close', () => {
 				rl.close();
 			});
-			parserProcess.on('error', (error) => {
-				console.log(error);
-			});
 		} catch (error) {
-			console.log('ERROR: throw in exec', error);
+			console.debug('ERROR: throw in exec', error);
 			reject(error);
 		}
 	});

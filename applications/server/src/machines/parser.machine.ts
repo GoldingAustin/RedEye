@@ -195,7 +195,7 @@ const invokeParsingScript = ({ projectDatabasePath, loggingFolderPath, maxProces
 		try {
 			if (process.pkg) {
 				const baseCommand = path.resolve(getRuntimeDir(), 'parsers', 'cobalt-strike-parser');
-				execFile(baseCommand, args, { shell: false }, execCallBack);
+				execFile(baseCommand, args, execCallBack);
 			} else {
 				exec(`cobalt-strike-parser ${args.join(' ')}`, execCallBack);
 			}
