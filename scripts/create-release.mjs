@@ -8,7 +8,7 @@ const {
 	values: {
 		/** @type {string} */
 		nodeVersion,
-		/** @type {['all'] | ('mac' | 'linux' | 'windows' | 'mac-arm')[]} */
+		/** @type {['all'] | ('mac' | 'linux' | 'windows')[]} */
 		os
 	},
 } = parseArgs({
