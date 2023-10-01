@@ -6,7 +6,7 @@ ENV CYPRESS_INSTALL_BINARY=0
 RUN npm install -g pkg rimraf
 RUN yarn install --immutable --inline-builds
 RUN yarn moon run server:build client:build
-RUN yarn node scripts/create-release.mjs
+RUN bash create-release.sh
 RUN tar -zcvf release.tar.gz ./release/
 RUN mkdir outputs
 RUN cp release.tar.gz outputs/release.tar.gz
