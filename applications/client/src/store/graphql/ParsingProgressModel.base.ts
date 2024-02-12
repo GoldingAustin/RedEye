@@ -5,9 +5,6 @@
 
 import { types, prop, tProp, Model, Ref, idProp } from 'mobx-keystone';
 import { QueryBuilder } from 'mk-gql';
-import type { ServerParsingProgressModel } from './ServerParsingProgressModel';
-
-import { ServerParsingProgressModelSelector, serverParsingProgressModelPrimitives } from './ServerParsingProgressModel';
 
 /**
  * ParsingProgressBase
@@ -15,29 +12,24 @@ import { ServerParsingProgressModelSelector, serverParsingProgressModelPrimitive
  */
 export class ParsingProgressModelBase extends Model({
 	__typename: tProp('ParsingProgress'),
+	currentTask: prop<string>().withSetter(),
 	date: prop<any>().withSetter(),
-	nextTaskDescription: prop<string>().withSetter(),
-	progress: prop<ServerParsingProgressModel[]>(() => []).withSetter(),
+	progress: prop<number>().withSetter(),
 }) {}
 
 export class ParsingProgressModelSelector extends QueryBuilder {
+	get currentTask() {
+		return this.__attr(`currentTask`);
+	}
 	get date() {
 		return this.__attr(`date`);
 	}
-	get nextTaskDescription() {
-		return this.__attr(`nextTaskDescription`);
-	}
-	progress(
-		builder?:
-			| string
-			| ServerParsingProgressModelSelector
-			| ((selector: ServerParsingProgressModelSelector) => ServerParsingProgressModelSelector)
-	) {
-		return this.__child(`progress`, ServerParsingProgressModelSelector, builder);
+	get progress() {
+		return this.__attr(`progress`);
 	}
 }
 export function selectFromParsingProgress() {
 	return new ParsingProgressModelSelector();
 }
 
-export const parsingProgressModelPrimitives = selectFromParsingProgress().date.nextTaskDescription;
+export const parsingProgressModelPrimitives = selectFromParsingProgress().currentTask.date.progress;

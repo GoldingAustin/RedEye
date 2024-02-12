@@ -3,13 +3,13 @@ import { Property, PrimaryKey, Entity, ManyToOne } from '@mikro-orm/core';
 import { Field, ObjectType, Int, registerEnumType } from 'type-graphql';
 import { GlobalOperator } from './Operator';
 import { randomUUID } from 'crypto';
+import { ParsingProgress } from '../projectModels';
 
 export enum ParsingStatus {
 	// Campaign has been created but no servers have been added
 	NOT_READY_TO_PARSE = 'NOT_READY_TO_PARSE',
-	// Live parsing cobalt strike server, manual uploaded parsing disallowed
-	// parsing may or may not be happening at this exact time
-	LIVE_PARSING_CS = 'LIVE_PARSING_CS',
+	// Parsing has been manually paused
+	PARSING_PAUSED = 'PARSING_PAUSED',
 	// manual parsing failure
 	PARSING_FAILURE = 'PARSING_FAILURE',
 	// Manual parsing campaign ready to parse but not initiated
@@ -22,9 +22,19 @@ export enum ParsingStatus {
 	PARSING_COMPLETED = 'PARSING_COMPLETED',
 }
 
+export enum CampaignType {
+	LIVE = 'LIVE',
+	STATIC = 'STATIC',
+}
+
 registerEnumType(ParsingStatus, {
 	name: 'ParsingStatus',
 	description: 'The current state of Campaign parsing',
+});
+
+registerEnumType(CampaignType, {
+	name: 'CampaignType',
+	description: 'Whether a campaign is live or static',
 });
 
 type RequiredInsertArgs = Pick<Campaign, 'name'>;
@@ -65,6 +75,10 @@ export class Campaign {
 	@Property()
 	commandCount: number = 0;
 
+	@Field(() => [ParsingProgress], { nullable: true })
+	@Property({ type: 'json', nullable: true })
+	parsingProgress?: ParsingProgress[];
+
 	@Field(() => Boolean)
 	@Property({ default: false })
 	migrationError: boolean = false;
@@ -80,6 +94,10 @@ export class Campaign {
 	@Field((_type) => ParsingStatus)
 	@Property({ type: 'string' })
 	parsingStatus: ParsingStatus = ParsingStatus.NOT_READY_TO_PARSE;
+
+	@Field((_type) => CampaignType)
+	@Property({ type: 'string' })
+	type: CampaignType = CampaignType.STATIC;
 
 	@Field(() => [CampaignParser], { nullable: true })
 	@Property({ type: 'json', nullable: true })

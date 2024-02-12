@@ -3,6 +3,7 @@ import * as process from 'process';
 import type { Options } from '@mikro-orm/core';
 import { ReflectMetadataProvider } from '@mikro-orm/core';
 import type { BetterSqliteDriver } from '@mikro-orm/better-sqlite';
+import { defineConfig } from '@mikro-orm/better-sqlite';
 
 import type { Database } from 'better-sqlite3';
 
@@ -11,8 +12,7 @@ import { campaignEntities } from './projectModels';
 export * from './projectModels';
 export * from './globalModels';
 export function getProjectMikroOrmConfig(dbName: string): Options<BetterSqliteDriver> {
-	return {
-		type: 'better-sqlite',
+	return defineConfig({
 		metadataProvider: ReflectMetadataProvider,
 		entities: campaignEntities,
 		dbName,
@@ -21,9 +21,10 @@ export function getProjectMikroOrmConfig(dbName: string): Options<BetterSqliteDr
 				const db = conn as Database;
 				db.pragma('journal_mode = WAL');
 				db.pragma('synchronous = NORMAL');
+				// eslint-disable-next-line @typescript-eslint/ban-types
 				(cb as Function)();
 			},
 		},
 		debug: !!process.env['DATABASE_DEBUG'],
-	};
+	});
 }

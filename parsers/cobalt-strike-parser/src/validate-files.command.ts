@@ -1,4 +1,4 @@
-import { Command } from 'commander';
+import type { Command } from 'commander';
 import fs from 'fs-extra';
 import path from 'path';
 import { ParserMessageTypes, writeParserMessage } from '@redeye/parser-core';

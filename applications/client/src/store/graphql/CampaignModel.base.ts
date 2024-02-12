@@ -6,11 +6,14 @@
 import { types, prop, tProp, Model, Ref, idProp } from 'mobx-keystone';
 import { QueryBuilder } from 'mk-gql';
 import type { CampaignParserModel } from './CampaignParserModel';
+import type { CampaignType } from './CampaignTypeEnum';
 import type { GlobalOperatorModel } from './GlobalOperatorModel';
+import type { ParsingProgressModel } from './ParsingProgressModel';
 import type { ParsingStatus } from './ParsingStatusEnum';
 
 import { CampaignParserModelSelector, campaignParserModelPrimitives } from './CampaignParserModel';
 import { GlobalOperatorModelSelector, globalOperatorModelPrimitives } from './GlobalOperatorModel';
+import { ParsingProgressModelSelector, parsingProgressModelPrimitives } from './ParsingProgressModel';
 
 /* The TypeScript type that explicits the refs to other models in order to prevent a circular refs issue */
 type Refs = {
@@ -36,8 +39,10 @@ export class CampaignModelBase extends Model({
 	migrationError: prop<boolean>().withSetter(),
 	name: prop<string>().withSetter(),
 	parsers: prop<CampaignParserModel[] | null>(() => []).withSetter(),
+	parsingProgress: prop<ParsingProgressModel[] | null>(() => []).withSetter(),
 	parsingStatus: prop<ParsingStatus>().withSetter(),
 	serverCount: prop<number>().withSetter(),
+	type: prop<CampaignType>().withSetter(),
 }) {
 	getRefId() {
 		return String(this.id);
@@ -78,6 +83,9 @@ export class CampaignModelSelector extends QueryBuilder {
 	get serverCount() {
 		return this.__attr(`serverCount`);
 	}
+	get type() {
+		return this.__attr(`type`);
+	}
 	creator(
 		builder?:
 			| string
@@ -102,6 +110,14 @@ export class CampaignModelSelector extends QueryBuilder {
 	) {
 		return this.__child(`parsers`, CampaignParserModelSelector, builder);
 	}
+	parsingProgress(
+		builder?:
+			| string
+			| ParsingProgressModelSelector
+			| ((selector: ParsingProgressModelSelector) => ParsingProgressModelSelector)
+	) {
+		return this.__child(`parsingProgress`, ParsingProgressModelSelector, builder);
+	}
 }
 export function selectFromCampaign() {
 	return new CampaignModelSelector();
@@ -109,4 +125,4 @@ export function selectFromCampaign() {
 
 export const campaignModelPrimitives =
 	selectFromCampaign().annotationCount.beaconCount.commandCount.computerCount.firstLogTime.lastLogTime.migrationError
-		.name.parsingStatus.serverCount;
+		.name.parsingStatus.serverCount.type;

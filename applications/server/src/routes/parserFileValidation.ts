@@ -2,7 +2,7 @@ import type { Router } from 'express';
 import type { EndpointContext } from '../types';
 import { withTempDir } from '../util';
 import path from 'path';
-import { invokeParser } from '../machines/parser.service';
+import { invokeParser } from '../machines/parser/invoke-parser';
 import { escapeFilePath } from '@redeye/parser-core';
 
 export function parserFileValidation(app: Router, context: EndpointContext) {

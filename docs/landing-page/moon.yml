@@ -1,3 +1,7 @@
+workspace:
+  inheritedTasks:
+    # Exclude the inherited `test` task for this project
+    exclude: ['lint-global']
 fileGroups:
   astro:
     - 'public/**/*'

@@ -51,16 +51,19 @@ export async function importCampaign(
 		return;
 	}
 }
-type CampaginUploadRequestBody = { name: string };
+type CampaignUploadRequestBody = { name: string };
 
 type RequestParams = { campaignId: string };
-type LogsRequestBody = { servers: { name: string; displayName: string }[] };
+type LogsRequestBody = {
+	parserId: string;
+	servers: { name: string; displayName: string }[];
+};
 
 export function uploadCampaign(app: Router, context: EndpointContext) {
 	const { config, parserInfo } = context;
 	const isBlue = !config.redTeam;
 	// log file upload
-	app.post<never, any, CampaginUploadRequestBody>('/campaign/upload', async (req, res) => {
+	app.post<never, any, CampaignUploadRequestBody>('/campaign/upload', async (req, res) => {
 		if (!isBlue && !isAuthRest(req, config)) return res.sendStatus(401);
 		if (!req.files) return res.status(500).send({ msg: 'file is not found' });
 		const name = req.body.name;
@@ -75,6 +78,7 @@ export function uploadCampaign(app: Router, context: EndpointContext) {
 		const campaignId = req.params.campaignId;
 
 		if (!isAuthRest(req, config)) return res.sendStatus(401);
+		console.log(req.body);
 		if (!req.files) return res.status(500).send({ msg: 'file is not found' });
 		if (!campaignId) return res.status(400).send({ msg: 'campaignId is not found' });
 
@@ -87,34 +91,43 @@ export function uploadCampaign(app: Router, context: EndpointContext) {
 			campaign.parsingStatus = ParsingStatus.PARSING_NOT_STARTED;
 			await globalEm.persistAndFlush(campaign);
 		} else if (campaign.parsingStatus !== ParsingStatus.PARSING_NOT_STARTED) {
-			res.status(400).send({
+			return res.status(400).send({
 				msg: `cannot add additional server to a campaign that is no longer eligible for parsing because it has a status of ${campaign.parsingStatus}`,
 			});
 		}
 
-		const fileServerStructure = parserInfo[campaign.parsers![0].parserName]?.uploadForm.serverDelineation;
-
-		const logFiles = Array.isArray(req.files.file) ? req.files.file : [req.files.file];
 		const em = await connectToProjectEmOrFail(campaignId, context);
-		const parentDir = path.resolve(getRootPath(), 'campaign', campaignId, 'logs');
-		for (const logFile of logFiles) await logFile.mv(path.join(parentDir, logFile.name.replace(/:/gi, '/')));
 		const servers: Server[] = [];
-		const newServers = JSON.parse(req.body.servers as unknown as string);
-		campaign.parsers[0].path = parentDir;
-		if (newServers.length) {
-			for (const server of newServers) {
-				const serverDir =
-					fileServerStructure === 'Database' || newServers.length === 1 ? parentDir : path.join(parentDir, server.name);
-				servers.push(
-					new Server({
-						name: server.name,
-						displayName: server.displayName,
-						parsingPath: serverDir,
-						id: server.name,
-					})
-				);
+
+		const { parserId, ...parserServersAndFiles } = req.body;
+		const campaignParserIndex: keyof typeof campaign.parsers = campaign.parsers.findIndex(
+			(parser) => parser.parserName === parserId
+		);
+		if (campaignParserIndex !== -1) {
+			const fileServerStructure = parserInfo[parserId]?.uploadForm.serverDelineation;
+			const logFiles = Array.isArray(req.files.file) ? req.files.file : [req.files.file];
+			const parentDir = path.resolve(getRootPath(), 'campaign', campaignId, parserId, 'logs');
+			for (const logFile of logFiles) await logFile.mv(path.join(parentDir, logFile.name.replace(/:/gi, '/')));
+			const newServers = JSON.parse(parserServersAndFiles.servers as unknown as string);
+			campaign.parsers[campaignParserIndex].path = parentDir;
+			if (newServers.length) {
+				for (const server of newServers) {
+					const serverDir =
+						fileServerStructure === 'Database' || newServers.length === 1
+							? parentDir
+							: path.join(parentDir, server.name);
+					servers.push(
+						new Server({
+							name: server.name,
+							displayName: server.displayName,
+							parsingPath: serverDir,
+							id: server.name,
+						})
+					);
+				}
 			}
 		}
+		console.log(campaign.parsers);
 		await globalEm.persistAndFlush(campaign);
 		await em.persistAndFlush(servers);
 

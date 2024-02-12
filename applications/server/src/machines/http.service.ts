@@ -26,7 +26,8 @@ import open from 'open';
 
 // @ts-ignore
 import packageJson from '../../../../package.json';
-import { parserInfo } from './parser.service';
+
+import { parserInfo } from './parser/parser-info';
 
 const graphqlPath = '/api/graphql';
 

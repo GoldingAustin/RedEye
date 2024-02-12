@@ -8,7 +8,7 @@ type Annotation {
   commandCount: Float!
   commandGroupId: String
   commandIds: [String]
-  date: DateTime!
+  date: DateTimeISO!
   favorite: Boolean!
   generation: GenerationType!
   id: String!
@@ -64,7 +64,7 @@ type BeaconMeta {
   color: NodeColors
 
   """The time that the last command was run"""
-  endTime: DateTime
+  endTime: DateTimeISO
   id: String!
 
   """The IP of the host at the time of the metadata line"""
@@ -86,7 +86,7 @@ type BeaconMeta {
   source: LogEntry
 
   """The start time of the beacon"""
-  startTime: DateTime
+  startTime: DateTimeISO
 
   """The communication type used by the beacon"""
   type: BeaconType
@@ -109,20 +109,28 @@ type Campaign {
   commandCount: Int!
   computerCount: Int!
   creator: GlobalOperator
-  firstLogTime: DateTime
+  firstLogTime: DateTimeISO
   id: String!
-  lastLogTime: DateTime
+  lastLogTime: DateTimeISO
   lastOpenedBy: GlobalOperator
   migrationError: Boolean!
   name: String!
   parsers: [CampaignParser!]
+  parsingProgress: [ParsingProgress!]
   parsingStatus: ParsingStatus!
   serverCount: Int!
+  type: CampaignType!
 }
 
 type CampaignParser {
   parserName: String
   path: String
+}
+
+"""Whether a campaign is live or static"""
+enum CampaignType {
+  LIVE
+  STATIC
 }
 
 type Command {
@@ -157,12 +165,12 @@ type CommandTypeCount {
 }
 
 """
-The javascript `Date` as string. Type represents date and time as the ISO Date string.
+A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar.This scalar is serialized to a string in ISO 8601 format and parsed from a string in ISO 8601 format.
 """
-scalar DateTime
+scalar DateTimeISO
 
 type File {
-  dateTime: DateTime!
+  dateTime: DateTimeISO!
   fileFlag: FileFlag!
   fileName: String!
   id: String!
@@ -241,7 +249,7 @@ type Image {
 type Link {
   command: Command
   destination: Beacon
-  endTime: DateTime
+  endTime: DateTimeISO
   id: String!
 
   """Was this Link manually created"""
@@ -252,7 +260,7 @@ type Link {
   origin: Beacon
 
   """Shouldn't be nullable but it is to handle bad data sets"""
-  startTime: DateTime
+  startTime: DateTimeISO
 }
 
 type LogEntry {
@@ -261,7 +269,7 @@ type LogEntry {
   """All lines in a LogEntry"""
   blob: String!
   command: Command
-  dateTime: DateTime
+  dateTime: DateTimeISO
   filepath: String
   id: String!
   lineNumber: Float!
@@ -315,7 +323,7 @@ type Mutation {
   anonymizeCampaign(anonymizeOptions: AnonymizationInput!, campaignId: String!): String!
 
   """Create a new Campaign"""
-  createCampaign(creatorName: String!, name: String!, parser: String!): Campaign!
+  createCampaign(creatorName: String!, name: String!, parsers: [String!]!): Campaign!
 
   """Create a global user"""
   createGlobalOperator(password: String!, username: String!): GlobalOperator
@@ -377,7 +385,7 @@ type Mutation {
   updateAnnotation(annotationId: String!, campaignId: String!, favorite: Boolean, tags: [String!]!, text: String!, user: String!): Annotation!
 
   """Update existing Beacon Metadata"""
-  updateBeaconMetadata(beaconDisplayName: String, beaconId: String!, beaconTimeOfDeath: DateTime, beaconType: BeaconType, campaignId: String!, color: NodeColors, shape: Shapes): Beacon!
+  updateBeaconMetadata(beaconDisplayName: String, beaconId: String!, beaconTimeOfDeath: DateTimeISO, beaconType: BeaconType, campaignId: String!, color: NodeColors, shape: Shapes): Beacon!
 
   """Update existing Host Display Name"""
   updateHostMetadata(campaignId: String!, color: NodeColors, hostDisplayName: String, hostId: String!, shape: Shapes): Host!
@@ -411,11 +419,11 @@ type NonHidableEntities {
 type Operator {
   beaconIds: [String!]!
   commentsCount: Float!
-  endTime: DateTime
+  endTime: DateTimeISO
   id: String!
   logIds: [String!]!
   name: String!
-  startTime: DateTime
+  startTime: DateTimeISO
 }
 
 type ParserInfo {
@@ -426,19 +434,19 @@ type ParserInfo {
 }
 
 type ParsingProgress {
-  date: DateTime!
-  nextTaskDescription: String!
-  progress: [ServerParsingProgress!]!
+  currentTask: String!
+  date: DateTimeISO!
+  progress: Float!
 }
 
 """The current state of Campaign parsing"""
 enum ParsingStatus {
-  LIVE_PARSING_CS
   NOT_READY_TO_PARSE
   PARSING_COMPLETED
   PARSING_FAILURE
   PARSING_IN_PROGRESS
   PARSING_NOT_STARTED
+  PARSING_PAUSED
   PARSING_QUEUED
 }
 
@@ -446,8 +454,8 @@ type PresentationCommandGroup {
   beaconIds: [String!]!
   commandIds: [String!]!
   id: String!
-  maxDate: DateTime
-  minDate: DateTime
+  maxDate: DateTimeISO
+  minDate: DateTimeISO
 }
 
 type PresentationItem {
@@ -552,9 +560,6 @@ type Query {
   operators(campaignId: String!, hidden: Boolean = false): [Operator]
   parserInfo: [ParserInfo!]!
 
-  """Get the current progress of the parser"""
-  parsingProgress: ParsingProgress!
-
   """Get categories for presentation mode"""
   presentationItems(campaignId: String!, commentsTabSort: SortTypeCommentsTab = {sortBy: minTime}, forOverviewComments: Boolean = false, hidden: Boolean = false, listSort: SortTypeCommentsList = {sortBy: alphabetical}, userOnly: Boolean = false): [PresentationItem]
 
@@ -577,7 +582,7 @@ type Query {
   tags(campaignId: String!): [Tag]
 
   """Get a bucketed summary of active beacons and links with commands"""
-  timeline(campaignId: String!, hidden: Boolean = false, suggestedBuckets: Float = 100, suggestedEndTime: DateTime = "+275760-09-12T23:50:00.000Z", suggestedStartTime: DateTime = "1970-01-01T00:00:00.001Z"): Timeline!
+  timeline(campaignId: String!, hidden: Boolean = false, suggestedBuckets: Float = 100, suggestedEndTime: DateTimeISO = "+275760-09-12T23:50:00.000Z", suggestedStartTime: DateTimeISO = "1970-01-01T00:00:00.001Z"): Timeline!
 }
 
 type Server {
@@ -604,13 +609,6 @@ type ServerMeta {
   id: String!
   shape: Shapes
   type: ServerType!
-}
-
-type ServerParsingProgress {
-  campaignId: String!
-  serverName: String!
-  tasksCompleted: Int!
-  totalTasks: Int!
 }
 
 """The communication type used by the server"""
@@ -696,14 +694,14 @@ type Tag {
 }
 
 type Timeline {
-  bucketEndTime: DateTime!
+  bucketEndTime: DateTimeISO!
 
   """The number of minutes a bucket spans"""
   bucketMinutes: Float!
-  bucketStartTime: DateTime!
+  bucketStartTime: DateTimeISO!
   buckets: [TimelineBucket!]!
-  campaignEndTime: DateTime!
-  campaignStartTime: DateTime!
+  campaignEndTime: DateTimeISO!
+  campaignStartTime: DateTimeISO!
 }
 
 type TimelineBucket {
@@ -717,8 +715,8 @@ type TimelineBucket {
   """
   activeLinks: [String!]!
   beaconCommandCountPair: [TimelineCommandCountTuple!]!
-  bucketEndTime: DateTime!
-  bucketStartTime: DateTime!
+  bucketEndTime: DateTimeISO!
+  bucketStartTime: DateTimeISO!
 
   """
   Beacons that were created during this time interval (Not mutually exclusive with dying but is mutually exclusive with active and dead)

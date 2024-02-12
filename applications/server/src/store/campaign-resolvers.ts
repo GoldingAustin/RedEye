@@ -39,7 +39,7 @@ export class CampaignResolvers {
 	async createCampaign(
 		@Ctx() ctx: GraphQLContext,
 		@Arg('name', () => String) name: string,
-		@Arg('parser', () => String) parser: string,
+		@Arg('parsers', () => [String]) parsers: string[],
 		@Arg('creatorName', () => String) creatorName: string
 	): Promise<Campaign> {
 		const em = getMainEmOrFail(ctx);
@@ -58,7 +58,7 @@ export class CampaignResolvers {
 			name,
 			lastOpenedBy: operator,
 			creator: operator,
-			parsers: [{ parserName: parser, path: '' }],
+			parsers: parsers.map((parser) => ({ parserName: parser, path: '' })),
 		});
 
 		await em.persistAndFlush(campaign);

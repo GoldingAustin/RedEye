@@ -1,25 +1,25 @@
-import { Campaign, ParsingStatus } from '@redeye/models';
+import { Campaign, CampaignParser, ParsingStatus } from '@redeye/models';
 import type { ActorRefFrom } from 'xstate';
 import { actions, createMachine } from 'xstate';
-import type { ConfigDefinition } from '../config';
-import { DatabaseMode } from '../config';
-import { getDatabaseFolderPath, getFullCampaignDbPath, getRuntimeDir } from '../util';
-import { connectOrCreateDatabase } from './maindb.service';
-import { updateProjectMetadata } from './updateProjectMetadata.service';
+import type { ConfigDefinition } from '../../config';
+import { DatabaseMode } from '../../config';
+import { getDatabaseFolderPath, getFullCampaignDbPath, getRuntimeDir } from '../../util';
+import { connectOrCreateDatabase } from '../maindb.service';
+import { updateProjectMetadata } from '../updateProjectMetadata.service';
 import { exec, execFile } from 'child_process';
 import path from 'path';
-import type { GraphQLContext } from '../types';
-import { parserService } from './parser.service';
+import type { GraphQLContext } from '../../types';
 import { escapeFilePath } from '@redeye/parser-core';
+import { parserService } from './parser.service';
 
 type ParserContext = {
-	queuedCampaigns: { campaignId: string; parserName: string }[];
-	currentCampaign: { campaignId: string; parserName: string } | null;
+	queuedCampaigns: { campaignId: string; parsers: CampaignParser[] }[];
+	currentCampaign: { campaignId: string; parsers: CampaignParser[] } | null;
 	config: ConfigDefinition;
 	context: GraphQLContext | null;
 };
 
-type Events = { type: 'ADD_CAMPAIGN'; campaignId: string; context: GraphQLContext; parserName: string };
+type Events = { type: 'ADD_CAMPAIGN'; campaignId: string; context: GraphQLContext; parsers: CampaignParser[] };
 
 export type SpawnedParsingMachine = ActorRefFrom<typeof parsingMachine>;
 
@@ -115,7 +115,7 @@ export const parsingMachine = createMachine(
 						}
 					)
 				);
-				return { currentCampaign: { campaignId: event.campaignId, parserName: event.parserName } };
+				return { currentCampaign: { campaignId: event.campaignId, parsers: event.parsers } };
 			}),
 			addCampaignWhileParsing: (ctx, event) => {
 				connectMainDb(ctx).then((orm) =>
@@ -127,35 +127,39 @@ export const parsingMachine = createMachine(
 						}
 					)
 				);
-				ctx.queuedCampaigns.push({ campaignId: event.campaignId, parserName: event.parserName });
+				ctx.queuedCampaigns.push({ campaignId: event.campaignId, parsers: event.parsers });
 			},
 			assignContext: actions.assign((_ctx, event) => ({ context: event.context })),
 		},
 		services: {
 			parse: async (ctx) => {
-				if (ctx.currentCampaign?.parserName === 'cobalt-strike-parser') {
-					return await invokeParsingScript({
-						projectDatabasePath: getFullCampaignDbPath(
-							ctx.currentCampaign?.campaignId as string,
-							ctx.config.databaseMode
-						),
-						maxProcesses: ctx.config.maxParserSubprocesses,
-						loggingFolderPath: getDatabaseFolderPath(
-							ctx.currentCampaign?.campaignId as string,
-							ctx.config.databaseMode
-						),
-					});
-				} else {
-					const mainOrm = await connectMainDb(ctx);
-					const campaign = await mainOrm.em.findOneOrFail(Campaign, { id: ctx.currentCampaign?.campaignId as string });
-					return await parserService({
-						parsingPaths: campaign.parsers![0].path,
-						parserName: ctx.currentCampaign?.parserName as string,
-						projectDatabasePath: getFullCampaignDbPath(
-							ctx.currentCampaign?.campaignId as string,
-							ctx.config.databaseMode
-						),
-					});
+				if (ctx.currentCampaign?.parsers?.length) {
+					// Because the cobalt strike parser is a version behind the other parsers, we want to run it first
+					const parsers = ctx.currentCampaign.parsers.sort((a) => (a.parserName === 'cobalt-strike-parser' ? -1 : 1));
+					for (const parser of parsers) {
+						if (parser.parserName === 'cobalt-strike-parser') {
+							await invokeParsingScript({
+								projectDatabasePath: getFullCampaignDbPath(
+									ctx.currentCampaign?.campaignId as string,
+									ctx.config.databaseMode
+								),
+								maxProcesses: ctx.config.maxParserSubprocesses,
+								loggingFolderPath: getDatabaseFolderPath(
+									ctx.currentCampaign?.campaignId as string,
+									ctx.config.databaseMode
+								),
+							});
+						} else {
+							await parserService({
+								parsingPaths: parser.path,
+								parserName: parser.parserName as string,
+								projectDatabasePath: getFullCampaignDbPath(
+									ctx.currentCampaign?.campaignId as string,
+									ctx.config.databaseMode
+								),
+							});
+						}
+					}
 				}
 			},
 			findMetadata: (ctx, event) => {

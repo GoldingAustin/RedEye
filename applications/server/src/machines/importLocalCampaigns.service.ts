@@ -5,7 +5,8 @@ import type { ServerMachineContext } from './server.machine';
 import { getRootPath } from '../util';
 import { importCampaign } from '../routes/uploadCampaign';
 import type { EndpointContext } from '../types';
-import { parserInfo } from './parser.service';
+
+import { parserInfo } from './parser/parser-info';
 
 export const importLocalCampaignsDatabasesService = (ctx: ServerMachineContext): Promise<void> => {
 	return new Promise<void>(async (resolve, reject) => {

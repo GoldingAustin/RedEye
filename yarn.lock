@@ -890,21 +890,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blueprintjs/colors@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "@blueprintjs/colors@npm:5.0.1"
+"@blueprintjs/colors@npm:^5.0.2":
+  version: 5.0.2
+  resolution: "@blueprintjs/colors@npm:5.0.2"
   dependencies:
     tslib: ~2.5.0
-  checksum: 14623051710ea972f33b005643113759705108222e59cc737d04565c04294d609b0beb06542c9f3f8bed967bc71e02e2f2ec25f9ebd48ca660067eedabb2ac48
+  checksum: e9db67af8f81a5ee69c5cc21b01a6872daa92079655c643dadffedcd68966df62b3111bb168a8c85e187d2735bef137a0ef59ca9c9d2adf2f84642fe02999feb
   languageName: node
   linkType: hard
 
-"@blueprintjs/core@npm:^5.2.0":
-  version: 5.2.0
-  resolution: "@blueprintjs/core@npm:5.2.0"
+"@blueprintjs/core@npm:^5.3.2":
+  version: 5.3.2
+  resolution: "@blueprintjs/core@npm:5.3.2"
   dependencies:
-    "@blueprintjs/colors": ^5.0.1
-    "@blueprintjs/icons": ^5.1.5
+    "@blueprintjs/colors": ^5.0.2
+    "@blueprintjs/icons": ^5.1.7
     "@popperjs/core": ^2.11.7
     classnames: ^2.3.1
     normalize.css: ^8.0.1
@@ -921,20 +921,20 @@ __metadata:
   bin:
     upgrade-blueprint-2.0.0-rename: scripts/upgrade-blueprint-2.0.0-rename.sh
     upgrade-blueprint-3.0.0-rename: scripts/upgrade-blueprint-3.0.0-rename.sh
-  checksum: 65e2a1d237889d090c86d6265383d535762670697049771af1eea6183f56befe64c1b243fe605ffb3e06e51ba8e8306a5a6cfe5436eca9cc92cd4d1aea924c6d
+  checksum: a521f8fb8cf459c4d42180410078bce43ee857b6ebf49007df29458c0bd58dac029d914b449d1281af3ecf027e33e448ffe6d4faf77ff7f7a7c94ca4299564dc
   languageName: node
   linkType: hard
 
-"@blueprintjs/datetime@npm:^5.0.8":
-  version: 5.0.8
-  resolution: "@blueprintjs/datetime@npm:5.0.8"
+"@blueprintjs/datetime@npm:^5.2.0":
+  version: 5.2.0
+  resolution: "@blueprintjs/datetime@npm:5.2.0"
   dependencies:
-    "@blueprintjs/core": ^5.2.0
-    "@blueprintjs/icons": ^5.1.5
-    "@blueprintjs/select": ^5.0.8
+    "@blueprintjs/core": ^5.3.2
+    "@blueprintjs/icons": ^5.1.7
+    "@blueprintjs/select": ^5.0.12
     classnames: ^2.3.1
     date-fns: ^2.28.0
-    date-fns-tz: ^1.3.7
+    date-fns-tz: ^2.0.0
     lodash: ^4.17.21
     react-day-picker: 7.4.9
     tslib: ~2.5.0
@@ -945,13 +945,13 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: edc52772ed23153a897c1c186ddd9d0f086a7dc35690279a55269dbe184ce12040e9a656fc2361515ad3b85ccdf23e0850da6c39284ff764cbe2b119f8d7ac17
+  checksum: 9cb7ed3b91534a262762f65f790d6503d3a36149f6c784f0f9d52fd1be9f9634d5d47ebfc327130cddbe0f459019c91ee0eb6fa5f3e872f7b2e6450c7afc798c
   languageName: node
   linkType: hard
 
-"@blueprintjs/icons@npm:^5.1.5":
-  version: 5.1.5
-  resolution: "@blueprintjs/icons@npm:5.1.5"
+"@blueprintjs/icons@npm:^5.1.7":
+  version: 5.1.7
+  resolution: "@blueprintjs/icons@npm:5.1.7"
   dependencies:
     change-case: ^4.1.2
     classnames: ^2.3.1
@@ -963,16 +963,16 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 74e9ee22f0d093b59664972825ae7de8a23493cfa7d4a679f76df0d6989e39746887a597532225ff6422910dd63fcfc61ed5ad2f2fab69cfe78c897e695f6464
+  checksum: 47724eb14460ce694a4213958a35262e09679817c8dd68d1a460fc735744a91634c57a7f2abed63427a0c7856245187ebdbd9827ef56690d926d84fce7e7e453
   languageName: node
   linkType: hard
 
-"@blueprintjs/select@npm:^5.0.8":
-  version: 5.0.8
-  resolution: "@blueprintjs/select@npm:5.0.8"
+"@blueprintjs/select@npm:^5.0.12":
+  version: 5.0.12
+  resolution: "@blueprintjs/select@npm:5.0.12"
   dependencies:
-    "@blueprintjs/core": ^5.2.0
-    "@blueprintjs/icons": ^5.1.5
+    "@blueprintjs/core": ^5.3.2
+    "@blueprintjs/icons": ^5.1.7
     classnames: ^2.3.1
     tslib: ~2.5.0
   peerDependencies:
@@ -982,7 +982,7 @@ __metadata:
   peerDependenciesMeta:
     "@types/react":
       optional: true
-  checksum: 9257ea79fbc6ba4eea3dcbe30e1aa7d12b67a41d640dde9ef9d458143c5fb168be875339b9fb73dbc8e83c9afe75ba2505986df75ec30d18e5e57f8d062e18a6
+  checksum: 2bff739c25f68dce210f17a617a69efc4fed02f4a3190f3dc41f088656e4ccc4ad37a11be17c201a1cbd49f3d8575aef6927ed53b61353b4cfa863050afd6a3d
   languageName: node
   linkType: hard
 
@@ -4219,12 +4219,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/sqlite3@npm:^3.1.7":
-  version: 3.1.8
-  resolution: "@types/sqlite3@npm:3.1.8"
+"@types/sqlite3@npm:^3.1.9":
+  version: 3.1.9
+  resolution: "@types/sqlite3@npm:3.1.9"
   dependencies:
     "@types/node": "*"
-  checksum: 5f68d93a04e6d99fb0cd3275fc37392ed74ba2fe3cc3a147383a939ff6bc624a98fedecfee814b416358285f85c793ce61be0b1d5f924681232ad24c3a2c56f2
+  checksum: 5570a8bf70a2a1da35de334fb4989cd285f31bd17daec4015b2294fb775104dace36c7dac3be5d79a76f38a5d3adcdd9631212907d98d03f0dd0314aff09fd44
   languageName: node
   linkType: hard
 
@@ -7012,12 +7012,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"date-fns-tz@npm:^1.3.7":
-  version: 1.3.8
-  resolution: "date-fns-tz@npm:1.3.8"
+"date-fns-tz@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "date-fns-tz@npm:2.0.0"
   peerDependencies:
     date-fns: ">=2.0.0"
-  checksum: dbf17cb88de7c7b71a9f86b815ac62ebdbf725c030e78d2421309456b5001a85284a5b6763f4af0ba660183f12e876c165e725a0723f642edb7846407db03133
+  checksum: a6553603a9d26dd9669326c99a58a2335ac550bc060c74b86a5ad9e1de73c9d4e3e5236f0f552f990e616e4e8dcc2b6a637913a04d2e04396e6a9f8ae83c73da
   languageName: node
   linkType: hard
 
@@ -9522,6 +9522,17 @@ __metadata:
   peerDependencies:
     graphql: 14 - 16
   checksum: 6d62630a0169574442320651c1f7626c0c602025c3c46b19e09417c9579bb209306ee63de9793a03be2e1701bb7f13971f8545d99bc6573e340f823af0ad35b2
+  languageName: node
+  linkType: hard
+
+"graphql-scalars@npm:^1.22.2":
+  version: 1.22.2
+  resolution: "graphql-scalars@npm:1.22.2"
+  dependencies:
+    tslib: ^2.5.0
+  peerDependencies:
+    graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+  checksum: 4a5e7aa2d81fbdeeef10ca77b44b4d171f5798640db4b57f65dd3285ce9d17e55714cc3e0460e917041c0432f25881955204552937876397f135fd95eddb8b0a
   languageName: node
   linkType: hard
 
@@ -12947,34 +12958,36 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mobx-react-lite@npm:^3.4.0":
-  version: 3.4.3
-  resolution: "mobx-react-lite@npm:3.4.3"
+"mobx-react-lite@npm:^4.0.5":
+  version: 4.0.5
+  resolution: "mobx-react-lite@npm:4.0.5"
+  dependencies:
+    use-sync-external-store: ^1.2.0
   peerDependencies:
-    mobx: ^6.1.0
+    mobx: ^6.9.0
     react: ^16.8.0 || ^17 || ^18
   peerDependenciesMeta:
     react-dom:
       optional: true
     react-native:
       optional: true
-  checksum: 60a2580eb9a0b9988fc76959d7299f018733dc33cacaa73c45500953006d4d45e738d9ae39ccfc767ac19a75656dbc028d833282c848fbc67d8d18a2bcb5c262
+  checksum: b0a3e4345c1449eee7c0a6aa2369475024a0c8227e11305cc965229527e3ddede4ca7b8337912a7fe396e24bd83986f2a88a21813c51cabdc18330fa484023b5
   languageName: node
   linkType: hard
 
-"mobx-utils@npm:^6.0.5":
-  version: 6.0.7
-  resolution: "mobx-utils@npm:6.0.7"
+"mobx-utils@npm:^6.0.8":
+  version: 6.0.8
+  resolution: "mobx-utils@npm:6.0.8"
   peerDependencies:
     mobx: ^6.0.0
-  checksum: 2d2fffcd26ca877193405c4c0f5622e2af73acf8d9b47e17a340f16a2bf8a872640da20e72d3ce70c3ed986ab16761fe7cd5964f379d74bdf5b1ae5f0beeaff7
+  checksum: 3cab9a858d6b19b2f5c4d5c39fcef7c171fe37c2b5e9f899e0988b475521e0ad0d52af290c04bcb694d8974f8bfac3ca6ee3340a0aeadd9efd770cfee3f44e4e
   languageName: node
   linkType: hard
 
-"mobx@npm:^6.6.2":
-  version: 6.9.0
-  resolution: "mobx@npm:6.9.0"
-  checksum: ae03e95334887305c49d3e63e54f5e5e571b21f6a649fc0b7f6f1afd83470db63d8ab3e7c4b9e6ace2aaf6eded5255878c5f69d293efa9fd35af3d640b4a4756
+"mobx@npm:^6.10.2":
+  version: 6.10.2
+  resolution: "mobx@npm:6.10.2"
+  checksum: 14d6f1db4e3a61c823510ea130229c96bd4958b77d81057ac1abc6a439703eaf3ea2289192ef205b4250d3adb1d83a439ad56d5e53f2b967c6e62a6bccc23d8a
   languageName: node
   linkType: hard
 
@@ -14785,9 +14798,9 @@ __metadata:
     "@apollo/server": ^4.7.0
     "@babel/plugin-proposal-class-properties": ^7.18.6
     "@babel/plugin-proposal-decorators": ^7.20.13
-    "@blueprintjs/core": ^5.2.0
-    "@blueprintjs/datetime": ^5.0.8
-    "@blueprintjs/select": ^5.0.8
+    "@blueprintjs/core": ^5.3.2
+    "@blueprintjs/datetime": ^5.2.0
+    "@blueprintjs/select": ^5.0.12
     "@carbon/icons-react": ^10.36.0
     "@changesets/cli": ^2.22.0
     "@emotion/babel-plugin": ^11.10.0
@@ -14828,7 +14841,7 @@ __metadata:
     "@types/rollup-plugin-auto-external": ^2.0.2
     "@types/serve-handler": ^6.1.1
     "@types/spdy": ^3.4.5
-    "@types/sqlite3": ^3.1.7
+    "@types/sqlite3": ^3.1.9
     "@types/testing-library__jest-dom": ^5.9.2
     "@types/testing-library__react": ^10.2.0
     "@types/throttle-debounce": ^5.0.0
@@ -14886,6 +14899,7 @@ __metadata:
     graphql: ^16.6.0
     graphql-fields-to-relations: ^1.0.5
     graphql-request: ^6.0.0
+    graphql-scalars: ^1.22.2
     history: ^5.1.0
     husky: ^7.0.2
     jest: ^29.5.0
@@ -14895,10 +14909,10 @@ __metadata:
     lint-staged: ^10.2.11
     minisearch: ^3.0.2
     mk-gql: ^0.8.3
-    mobx: ^6.6.2
+    mobx: ^6.10.2
     mobx-keystone: 1.2.0
-    mobx-react-lite: ^3.4.0
-    mobx-utils: ^6.0.5
+    mobx-react-lite: ^4.0.5
+    mobx-utils: ^6.0.8
     mocha: ^8.0.1
     mocha-junit-reporter: ^2.0.2
     moment: ^2.29.4
@@ -14937,7 +14951,7 @@ __metadata:
     tsc-watch: ^6.0.4
     tslib: ^2.4.0
     tsx: ^3.12.10
-    type-graphql: ^2.0.0-beta.1
+    type-graphql: ^2.0.0-beta.3
     typedoc: ^0.24.8
     typedoc-plugin-markdown: ^3.15.4
     typescript: ^5.0.4
@@ -15562,7 +15576,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.3.8, semver@npm:^7.5.0, semver@npm:^7.5.3":
+"semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.7, semver@npm:^7.3.8, semver@npm:^7.5.3, semver@npm:^7.5.4":
   version: 7.5.4
   resolution: "semver@npm:7.5.4"
   dependencies:
@@ -17062,23 +17076,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-graphql@npm:^2.0.0-beta.1":
-  version: 2.0.0-beta.2
-  resolution: "type-graphql@npm:2.0.0-beta.2"
+"type-graphql@npm:^2.0.0-beta.3":
+  version: 2.0.0-beta.3
+  resolution: "type-graphql@npm:2.0.0-beta.3"
   dependencies:
     "@types/node": "*"
     "@types/semver": ^7.5.0
     graphql-query-complexity: ^0.12.0
     graphql-subscriptions: ^2.0.0
-    semver: ^7.5.0
-    tslib: ^2.5.0
+    semver: ^7.5.4
+    tslib: ^2.6.0
   peerDependencies:
     class-validator: ">=0.14.0"
-    graphql: ^16.6.0
+    graphql: ^16.7.1
+    graphql-scalars: ^1.22.2
   peerDependenciesMeta:
     class-validator:
       optional: true
-  checksum: 66112e8074abc29aec31a234b110bbf43eb50993e2ec56d472a886b273fdf240ad36a582d079b2226a6ebe3724605d768f75ad7556727231516c1b8a00184ad8
+  checksum: 48fea85f4d897efa5cc93c09c2d43929efd1940583da341d76ea52e17a75514511e0a7249c1f9c9d4166f0cb3585b8f5654b3ab45b0c08e2e263c5534d460d24
   languageName: node
   linkType: hard
 

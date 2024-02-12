@@ -11,7 +11,6 @@ import { ImageResolvers } from './image-resolvers';
 import { LinksResolvers } from './links-resolvers';
 import { LogResolvers } from './log-resolvers';
 import { PresentationResolvers } from './presentation-resolvers';
-import { ProgressResolvers } from './progress-resolvers';
 import { ServerResolvers } from './server-resolvers';
 import { TimelineResolvers } from './timeline-resolvers';
 import { ParserResolvers } from './parser-resolvers';
@@ -32,7 +31,6 @@ export const resolvers: NonEmptyArray<Function> = [
 	OperatorResolvers,
 	ParserResolvers,
 	PresentationResolvers,
-	ProgressResolvers,
 	ServerResolvers,
 	TimelineResolvers,
 ];

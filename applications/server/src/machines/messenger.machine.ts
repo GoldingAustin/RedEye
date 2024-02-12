@@ -2,11 +2,12 @@ import 'reflect-metadata';
 
 import type { ActorRefFrom } from 'xstate';
 import { actions, createMachine, spawn } from 'xstate';
-import type { SpawnedParsingMachine } from './parser.machine';
-import { parsingMachine } from './parser.machine';
+import type { SpawnedParsingMachine } from './parser/parser.machine';
+import { parsingMachine } from './parser/parser.machine';
 
 import type { GraphQLContext } from '../types';
 import type { ConfigDefinition } from '../config';
+import { CampaignParser } from '@redeye/models';
 
 type MessengerMachineContext = {
 	parsingMachine: SpawnedParsingMachine;
@@ -16,7 +17,7 @@ type MessengerMachineContext = {
 type MessengerMachineEvents = {
 	type: 'PARSE_CAMPAIGN';
 	campaignId: string;
-	parserName: string;
+	parsers: CampaignParser[];
 	context: GraphQLContext;
 };
 
@@ -58,7 +59,7 @@ export const messengerMachine = createMachine(
 			forwardParseMessage: actions.send(
 				(_ctx, event) => ({
 					type: 'ADD_CAMPAIGN',
-					parserName: event.parserName,
+					parsers: event.parsers,
 					campaignId: event.campaignId,
 					context: event.context,
 				}),

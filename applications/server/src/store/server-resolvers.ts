@@ -76,7 +76,7 @@ export class ServerResolvers {
 			type: 'PARSE_CAMPAIGN',
 			campaignId,
 			context: ctx,
-			parserName: campaign.parsers[0].parserName,
+			parsers: campaign.parsers,
 		});
 		return true;
 	}

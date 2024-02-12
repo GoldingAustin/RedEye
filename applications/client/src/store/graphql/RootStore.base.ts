@@ -66,11 +66,6 @@ import {
 } from './PresentationItemModel';
 import { ServerModel, serverModelPrimitives, ServerModelSelector } from './ServerModel';
 import { ServerMetaModel, serverMetaModelPrimitives, ServerMetaModelSelector } from './ServerMetaModel';
-import {
-	ServerParsingProgressModel,
-	serverParsingProgressModelPrimitives,
-	ServerParsingProgressModelSelector,
-} from './ServerParsingProgressModel';
 import { TagModel, tagModelPrimitives, TagModelSelector } from './TagModel';
 import { TimelineModel, timelineModelPrimitives, TimelineModelSelector } from './TimelineModel';
 import { TimelineBucketModel, timelineBucketModelPrimitives, TimelineBucketModelSelector } from './TimelineBucketModel';
@@ -83,6 +78,7 @@ import { UploadFormModel, uploadFormModelPrimitives, UploadFormModelSelector } f
 
 import type { BeaconLineType } from './BeaconLineTypeEnum';
 import type { BeaconType } from './BeaconTypeEnum';
+import type { CampaignType } from './CampaignTypeEnum';
 import type { FileFlag } from './FileFlagEnum';
 import type { GenerationType } from './GenerationTypeEnum';
 import type { LogType } from './LogTypeEnum';
@@ -182,7 +178,6 @@ export enum RootStoreBaseQueries {
 	queryNonHidableEntities = 'queryNonHidableEntities',
 	queryOperators = 'queryOperators',
 	queryParserInfo = 'queryParserInfo',
-	queryParsingProgress = 'queryParsingProgress',
 	queryPresentationItems = 'queryPresentationItems',
 	querySearchAnnotations = 'querySearchAnnotations',
 	querySearchCommands = 'querySearchCommands',
@@ -245,7 +240,6 @@ export class RootStoreBase extends ExtendedModel(
 			['PresentationItem', () => PresentationItemModel],
 			['Server', () => ServerModel],
 			['ServerMeta', () => ServerMetaModel],
-			['ServerParsingProgress', () => ServerParsingProgressModel],
 			['Tag', () => TagModel],
 			['Timeline', () => TimelineModel],
 			['TimelineBucket', () => TimelineBucketModel],
@@ -634,7 +628,7 @@ export class RootStoreBase extends ExtendedModel(
 			!!clean
 		);
 	}
-	// Get logs from beacon sorted by time. The goal is to be able to re-create the full log for that beacon.
+	// Get log files from beacon
 	@modelAction queryLogFilesByBeaconId(
 		variables: { beaconId: string; campaignId: string },
 		_?: any,
@@ -736,30 +730,6 @@ export class RootStoreBase extends ExtendedModel(
 		return this.query<{ parserInfo: ParserInfoModel[] }>(
 			`query parserInfo { parserInfo {
         ${typeof resultSelector === 'function' ? resultSelector(ParserInfoModelSelector).toString() : resultSelector}
-      } }`,
-			variables,
-			options,
-			!!clean
-		);
-	}
-	// Get the current progress of the parser
-	@modelAction queryParsingProgress(
-		variables?: {},
-		resultSelector:
-			| string
-			| ((
-					qb: typeof ParsingProgressModelSelector
-			  ) => typeof ParsingProgressModelSelector) = parsingProgressModelPrimitives.toString(),
-		options: QueryOptions = {},
-		clean?: boolean
-	) {
-		return this.query<{ parsingProgress: ParsingProgressModel }>(
-			`query parsingProgress { parsingProgress {
-        ${
-					typeof resultSelector === 'function'
-						? resultSelector(ParsingProgressModelSelector).toString()
-						: resultSelector
-				}
       } }`,
 			variables,
 			options,
@@ -985,14 +955,14 @@ export class RootStoreBase extends ExtendedModel(
 	}
 	// Create a new Campaign
 	@modelAction mutateCreateCampaign(
-		variables: { creatorName: string; name: string; parser: string },
+		variables: { creatorName: string; name: string; parsers: string[] },
 		resultSelector:
 			| string
 			| ((qb: typeof CampaignModelSelector) => typeof CampaignModelSelector) = campaignModelPrimitives.toString(),
 		optimisticUpdate?: () => void
 	) {
 		return this.mutate<{ createCampaign: CampaignModel }>(
-			`mutation createCampaign($creatorName: String!, $name: String!, $parser: String!) { createCampaign(creatorName: $creatorName, name: $name, parser: $parser) {
+			`mutation createCampaign($creatorName: String!, $name: String!, $parsers: [String!]!) { createCampaign(creatorName: $creatorName, name: $name, parsers: $parsers) {
         ${typeof resultSelector === 'function' ? resultSelector(CampaignModelSelector).toString() : resultSelector}
       } }`,
 			variables,

@@ -12,7 +12,7 @@ import { LogEntry, LogType, BeaconLineType } from './LogEntry';
 import { Link } from './Link';
 import { mitreTechniques, MitreTechniques } from './MitreTechniques';
 import { Operator } from './Operator';
-import { ParsingProgress, ServerParsingProgress } from './Progress';
+import { ParsingProgress } from './Progress';
 import { Server } from './Server';
 import { ServerMeta, ServerType } from './ServerMeta';
 import { Tag } from './Tag';
@@ -33,7 +33,6 @@ export const campaignEntities = [
 	LogEntry,
 	Operator,
 	ParsingProgress,
-	ServerParsingProgress,
 	Server,
 	ServerMeta,
 	Tag,
@@ -58,7 +57,6 @@ export {
 	LogEntry,
 	Operator,
 	ParsingProgress,
-	ServerParsingProgress,
 	Server,
 	ServerMeta,
 	Tag,
